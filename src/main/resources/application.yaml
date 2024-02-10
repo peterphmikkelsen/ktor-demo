@@ -1,5 +1,6 @@
 ktor:
   application:
+    name: "ktor-demo"
     modules:
       - com.demo.ApplicationKt.module
   deployment:
@@ -9,3 +10,6 @@ storage:
   jdbcURL: "jdbc:postgresql://localhost:5432/demodatabase"
   user: "Peter.Mikkelsen"
   driverClassName: org.postgresql.Driver
+
+tracing:
+  endpoint: "http://localhost:4317"

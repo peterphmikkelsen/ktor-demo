@@ -3,7 +3,6 @@ package com.demo.users.storage
 import com.demo.users.Status
 import com.demo.users.User
 import com.demo.users.UserNotFoundException
-import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -12,7 +11,6 @@ import java.util.*
 
 class UserRepository {
 
-    @WithSpan
     fun insert(user: User, initialStatus: Status = Status.Active): ResultRow = transaction {
         UserTable.insert {
             it[email] = user.email
