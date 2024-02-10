@@ -1,28 +1,43 @@
 package com.demo.utils.tracing
 
-import io.opentelemetry.api.trace.SpanKind
-import io.opentelemetry.api.trace.StatusCode
 import io.opentelemetry.api.trace.Tracer
+import org.jetbrains.exposed.sql.Transaction
+import org.jetbrains.exposed.sql.statements.StatementContext
+import org.jetbrains.exposed.sql.statements.StatementInterceptor
+import org.jetbrains.exposed.sql.statements.api.PreparedStatementApi
+import org.jetbrains.exposed.sql.statements.expandArgs
+import org.jetbrains.exposed.sql.transactions.TransactionManager
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.java.KoinJavaComponent.inject
 
 val tracer by inject<Tracer>(Tracer::class.java)
 
-fun <T> traced(
-    name: String,
-    kind: SpanKind = SpanKind.INTERNAL,
-    statement: () -> T
-): T {
-    val span = tracer.spanBuilder(name).setSpanKind(kind).run {
-        startSpan()
+fun <T> tracedTransaction(statement: Transaction.() -> T): T {
+    return transaction {
+        registerInterceptor(TracingInterceptor())
+        statement()
+    }
+}
+
+private class TracingInterceptor: StatementInterceptor {
+    private val span = tracer.spanBuilder("exposedTransaction").startSpan()
+    override fun beforeExecution(transaction: Transaction, context: StatementContext) {
+        val query = context.expandArgs(TransactionManager.current()).format()
+        span.let {
+            it.setAttribute("statementCount", transaction.statementCount.toLong())
+            it.setAttribute("dbUrl", transaction.db.url)
+            it.setAttribute("dbVendor", transaction.db.vendor)
+            it.setAttribute("dbVersion", transaction.db.version.toDouble())
+            it.setAttribute("query", query)
+            it.setAttribute("table", context.statement.targets.map { target -> target.tableName }.toString())
+        }
     }
 
-    return try {
-        statement()
-    } catch (throwable: Throwable) {
-        span.setStatus(StatusCode.ERROR)
-        span.recordException(throwable)
-        throw throwable
-    } finally {
+    override fun afterExecution(
+        transaction: Transaction,
+        contexts: List<StatementContext>,
+        executedStatement: PreparedStatementApi
+    ) {
         span.end()
     }
 }
