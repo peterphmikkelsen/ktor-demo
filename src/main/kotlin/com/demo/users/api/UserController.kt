@@ -6,7 +6,6 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.jetbrains.exposed.sql.exposedLogger
 import org.koin.ktor.ext.inject
 import java.util.*
 
@@ -17,7 +16,6 @@ fun Application.configureUserRoutes() {
         route("/v1/user") {
             post {
                 val user = call.receive<ApiResource.Data<CreateUserRequest>>().data.asDomain()
-                exposedLogger.info(user.toString())
                 val (id, created, status) = userService.createNewUser(user)
                 call.respond(HttpStatusCode.Created, ApiResource.Data(UserReferenceResponse(id, created, status)))
             }
