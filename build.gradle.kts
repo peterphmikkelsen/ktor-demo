@@ -6,6 +6,7 @@ val exposed_version: String by project
 val koin_version: String by project
 val postgresql_version: String by project
 val flyway_version: String by project
+val otel_version: String by project
 
 plugins {
     kotlin("jvm") version "1.9.22"
@@ -43,8 +44,9 @@ dependencies {
     // observability
     implementation("io.micrometer:micrometer-registry-prometheus:$prometeus_version")
     implementation("io.opentelemetry.instrumentation:opentelemetry-ktor-2.0:2.0.0-alpha")
-    implementation("io.opentelemetry:opentelemetry-exporter-otlp:1.35.0")
-    implementation("io.micrometer:micrometer-tracing-bridge-otel:1.2.2")
+    implementation("io.opentelemetry:opentelemetry-exporter-otlp:$otel_version")
+    implementation("io.opentelemetry:opentelemetry-sdk:$otel_version")
+    implementation("io.opentelemetry:opentelemetry-extension-trace-propagators:$otel_version")
 
     // database
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
