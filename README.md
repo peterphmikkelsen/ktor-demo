@@ -1,5 +1,5 @@
-# Ktor demo app
-A demo Ktor app - a reference backend service, which includes everything from database access to observability.
+# Ktor Demo Server Application
+A demo Ktor server application - a reference backend service that includes everything from database access to observability.
 
 ## Technologies
 
