@@ -1,5 +1,5 @@
-# Ktor demo app
-A demo Ktor app - a reference backend service, which includes everything from database access to observability.
+# Ktor Demo Server Application
+A demo Ktor server application - a reference backend service that includes everything from database access to observability.
 
 ## Technologies
 
@@ -11,7 +11,7 @@ I generally haven't had any issues. Koin gives you full control over which compo
 
 ### Observability
 Most (all?) modern, real-world services have some form of observability attached to it, be it _just_ logging or also metrics and traces. So, of course this reference service also has it. A combination of [Logback](https://logback.qos.ch/), [Micrometer](https://micrometer.io/) and [Open Telemetry](https://opentelemetry.io/)
-gives us all the observaility we need.
+gives us all the observability we need.
 
 ### Database
 What service is complete without a database? (probably quite a lot actually) So, for this we will use a standard Postgres database. And to access it we will be using [Exposed](https://github.com/JetBrains/Exposed), a lightweight ORM framework also built by JetBrains for Kotlin.
