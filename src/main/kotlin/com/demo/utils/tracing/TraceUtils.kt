@@ -1,5 +1,6 @@
 package com.demo.utils.tracing
 
+import io.opentelemetry.api.trace.StatusCode
 import io.opentelemetry.api.trace.Tracer
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.statements.StatementContext
@@ -8,9 +9,28 @@ import org.jetbrains.exposed.sql.statements.api.PreparedStatementApi
 import org.jetbrains.exposed.sql.statements.expandArgs
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.koin.core.component.getScopeName
 import org.koin.java.KoinJavaComponent.inject
 
 val tracer by inject<Tracer>(Tracer::class.java)
+
+fun <T> traced(statement: () -> T): T {
+    val name = statement.getScopeName().value
+        .substringAfterLast(".")
+        .replace("$1", "")
+        .replace("$", ".")
+
+    val span = tracer.spanBuilder(name).startSpan()
+    return try {
+        statement()
+    } catch (t: Throwable) {
+        span.recordException(t)
+        span.setStatus(StatusCode.ERROR)
+        throw t
+    } finally {
+        span.end()
+    }
+}
 
 fun <T> tracedTransaction(includeQuery: Boolean = true, statement: Transaction.() -> T): T {
     return transaction {

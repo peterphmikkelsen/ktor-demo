@@ -3,6 +3,7 @@ package com.demo.users.service
 import com.demo.users.User
 import com.demo.users.storage.UserRepository
 import com.demo.users.storage.UserTable
+import com.demo.utils.tracing.traced
 import org.jetbrains.exposed.sql.ResultRow
 import java.util.*
 
@@ -16,11 +17,11 @@ class UserService(private val userRepository: UserRepository) {
         return Triple(id, created, status)
     }
 
-    fun getUserById(id: UUID): Triple<User, String, String> {
+    fun getUserById(id: UUID): Triple<User, String, String> = traced {
         val row = userRepository.findById(id)
         val lastModified = row[UserTable.updated].toString()
         val status = row[UserTable.status].toString()
-        return Triple(row.toDomain(), lastModified, status)
+        Triple(row.toDomain(), lastModified, status)
     }
 
     fun markUserAsInactive(id: UUID) {
