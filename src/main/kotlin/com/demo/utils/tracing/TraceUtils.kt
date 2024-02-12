@@ -40,7 +40,7 @@ fun <T> tracedTransaction(includeQuery: Boolean = true, statement: Transaction.(
 }
 
 private class TracingInterceptor(val includeQuery: Boolean): StatementInterceptor {
-    private val span = tracer.spanBuilder("exposedTransaction").startSpan()
+    private val span = tracer.spanBuilder("Exposed.transaction").startSpan()
 
     override fun beforeExecution(transaction: Transaction, context: StatementContext) {
         val query = context.expandArgs(TransactionManager.current())
