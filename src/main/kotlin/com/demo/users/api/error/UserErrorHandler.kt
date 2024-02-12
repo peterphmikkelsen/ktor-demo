@@ -11,7 +11,7 @@ fun StatusPagesConfig.userErrorHandler() {
     exception(UserNotFoundException::handle)
     exception(UUIDFormatException::handle)
 
-    exception<Exception> { call, _ ->
+    exception<Throwable> { call, _ ->
         val status = HttpStatusCode.InternalServerError
         call.response.status(status)
         call.respond(ApiResource.Error(status.description, status.value))
