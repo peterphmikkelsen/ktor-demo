@@ -14,7 +14,7 @@ import io.opentelemetry.semconv.ResourceAttributes
 
 fun Application.configureOpenTelemetry() {
     val applicationName = environment.config.property("ktor.application.name").getString()
-    val traceEndpoint = environment.config.property("tracing.endpoint").getString()
+    val traceEndpoint = environment.config.property("observability.tracing.endpoint").getString()
 
     val resource = Resource.getDefault().merge(Resource.create(Attributes.of(ResourceAttributes.SERVICE_NAME, applicationName)))
     val spanProcessor = BatchSpanProcessor.builder(OtlpGrpcSpanExporter.builder().setEndpoint(traceEndpoint).build()).build()

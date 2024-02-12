@@ -10,6 +10,7 @@ import io.micrometer.core.instrument.binder.system.ProcessorMetrics
 import io.micrometer.prometheus.*
 
 fun Application.configureMonitoring() {
+    val path = environment.config.property("observability.metrics.path").getString()
     val appMicrometerRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
     install(MicrometerMetrics) {
@@ -21,7 +22,7 @@ fun Application.configureMonitoring() {
         )
     }
     routing {
-        get("/metrics-micrometer") {
+        get(path) {
             call.respond(appMicrometerRegistry.scrape())
         }
     }

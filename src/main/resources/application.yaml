@@ -11,5 +11,8 @@ storage:
   user: "Peter.Mikkelsen"
   driverClassName: org.postgresql.Driver
 
-tracing:
-  endpoint: "http://localhost:4317"
+observability:
+  metrics:
+    path: "/metrics/scrape"
+  tracing:
+    endpoint: "http://localhost:4317"
