@@ -12,14 +12,14 @@ import org.koin.java.KoinJavaComponent.inject
 
 val tracer by inject<Tracer>(Tracer::class.java)
 
-fun <T> tracedTransaction(traceQuery: Boolean = true, statement: Transaction.() -> T): T {
+fun <T> tracedTransaction(includeQuery: Boolean = true, statement: Transaction.() -> T): T {
     return transaction {
-        registerInterceptor(TracingInterceptor(traceQuery))
+        registerInterceptor(TracingInterceptor(includeQuery))
         statement()
     }
 }
 
-private class TracingInterceptor(val traceQuery: Boolean): StatementInterceptor {
+private class TracingInterceptor(val includeQuery: Boolean): StatementInterceptor {
     private val span = tracer.spanBuilder("exposedTransaction").startSpan()
 
     override fun beforeExecution(transaction: Transaction, context: StatementContext) {
@@ -29,7 +29,7 @@ private class TracingInterceptor(val traceQuery: Boolean): StatementInterceptor 
             it.setAttribute("dbUrl", transaction.db.url)
             it.setAttribute("dbVendor", transaction.db.vendor)
             it.setAttribute("dbVersion", transaction.db.version.toDouble())
-            if (traceQuery) it.setAttribute("query", query)
+            if (includeQuery) it.setAttribute("query", query)
             it.setAttribute("table", context.statement.targets.map { target -> target.tableName }.toString())
         }
     }

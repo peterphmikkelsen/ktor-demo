@@ -11,7 +11,7 @@ import java.util.*
 
 class UserRepository {
 
-    fun insert(user: User, initialStatus: Status = Status.Active): ResultRow = tracedTransaction(traceQuery = false) {
+    fun insert(user: User, initialStatus: Status = Status.Active): ResultRow = tracedTransaction(includeQuery = false) {
         UserTable.insert {
             it[email] = user.email
             it[name] = user.name
