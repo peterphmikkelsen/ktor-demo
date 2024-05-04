@@ -8,11 +8,11 @@ sealed interface ApiResource {
     data class Data<T>(val data: T): ApiResource
 
     @Serializable
-    data class Error(val errors: List<ErrorDetails>): ApiResource {
+    data class Error(val errors: List<ErrorDetails>, val code: Int): ApiResource {
 
-        constructor(title: String, code: Int): this(listOf(ErrorDetails(title, code)))
+        constructor(title: String, code: Int): this(listOf(ErrorDetails(title)), code)
 
         @Serializable
-        data class ErrorDetails(val title: String, val code: Int, val reason: String? = null)
+        data class ErrorDetails(val title: String, val reason: String? = null)
     }
 }
