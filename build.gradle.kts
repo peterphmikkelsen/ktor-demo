@@ -37,6 +37,7 @@ dependencies {
     implementation("io.ktor:ktor-server-swagger-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-metrics-micrometer-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")
+    implementation("io.ktor:ktor-server-request-validation:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty:$ktor_version")
     implementation("io.ktor:ktor-server-config-yaml:$ktor_version")

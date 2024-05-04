@@ -16,4 +16,5 @@ fun Application.module() {
     configureErrorHandling()
     configureOpenTelemetry()
     configureKoin()
+    configureRequestValidation()
 }
