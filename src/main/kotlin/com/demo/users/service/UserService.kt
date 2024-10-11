@@ -17,11 +17,11 @@ class UserService(private val userRepository: UserRepository) {
         return Triple(id, created, status)
     }
 
-    fun getUserById(id: UUID): Triple<User, String, String> {
-        val row = userRepository.findById(id)
+    fun getUserById(id: UUID): Result<Triple<User, String, String>> {
+        val row = userRepository.findById(id).getOrElse { return Result.failure(it) }
         val lastModified = row[UserTable.updated].toString()
         val status = row[UserTable.status].toString()
-        return Triple(row.toDomain(), lastModified, status)
+        return Result.success(Triple(row.toDomain(), lastModified, status))
     }
 
     fun markUserAsInactive(id: UUID) = traced {

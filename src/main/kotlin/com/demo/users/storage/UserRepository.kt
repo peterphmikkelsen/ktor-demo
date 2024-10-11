@@ -22,13 +22,17 @@ class UserRepository {
         }.resultedValues!!.first()
     }
 
-    fun findById(id: UUID): ResultRow = tracedTransaction {
-        UserTable.select { UserTable.id eq id }.firstOrNull() ?: throw UserNotFoundException(id)
+    fun findById(id: UUID): Result<ResultRow> = tracedTransaction {
+        val result = UserTable.select { UserTable.id eq id }.firstOrNull()
+        if (result != null) Result.success(result) else Result.failure(UserNotFoundException(id))
     }
+
+    // Results ↑ vs. Exceptions ↓ for control flow
 
     fun markAsInactive(id: UUID) = tracedTransaction {
         if (UserTable.update({ UserTable.id eq id }) {
-                it[status] = Status.Inactive.toString(); it[updated] = LocalDateTime.now() // manually update the updated column
+                it[status] = Status.Inactive.toString()
+                it[updated] = LocalDateTime.now() // manually update the updated column
         } <= 0) throw UserNotFoundException(id)
     }
 

@@ -22,5 +22,11 @@ fun Application.configureErrorHandling() {
             val reasons = cause.reasons.map { ApiResource.Error.ErrorDetails(status.description, it) }
             call.respond(status, ApiResource.Error(reasons, status.value))
         }
+
+        exception<Throwable> { call, _ ->
+            val status = HttpStatusCode.InternalServerError
+            call.response.status(status)
+            call.respond(ApiResource.Error(status.description, status.value))
+        }
     }
 }

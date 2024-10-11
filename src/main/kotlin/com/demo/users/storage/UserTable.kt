@@ -4,6 +4,7 @@ import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.javatime.datetime
 import java.time.LocalDateTime
 
+// Exposed ORM
 object UserTable: UUIDTable("users") {
     val name = varchar("name", length = 255)
     val age = integer("age")
