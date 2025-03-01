@@ -1,6 +1,9 @@
 # Ktor Demo Server Application
 A demo Ktor server application - a reference backend service that includes everything from database access to observability.
 
+The application is written to highlight certain differences to other languages (especially Java). For instance, different ways to achieve the same things in Kotlin and showcasing both exceptions and result objects for control flow.
+So, if you are reading the code and think to yourself: "Why is there multiple approaches everywhere?" (or something similar), chances are that it is completely intentional.
+
 ## Technologies
 
 ### Core
